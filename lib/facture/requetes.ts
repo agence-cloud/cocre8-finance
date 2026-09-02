@@ -64,9 +64,16 @@ export async function lireObjectif(annee: number): Promise<number> {
 /**
  * Les années où il s'est passé quelque chose, la plus récente d'abord.
  *
- * L'année en cours y figure toujours, même vide : sans elle, un outil qu'on
- * vient d'installer n'aurait aucune année à proposer, et son sélecteur
- * s'ouvrirait sur rien.
+ * **Trois années y figurent toujours, même vides : celle en cours et la
+ * suivante.** L'année en cours, sans quoi un outil qu'on vient d'installer
+ * n'aurait aucune année à proposer et son sélecteur s'ouvrirait sur rien.
+ * L'année suivante, parce qu'un objectif se pose en décembre pour janvier :
+ * sans elle, il faudrait attendre le 1er janvier pour écrire le chiffre qu'on
+ * a décidé trois semaines plus tôt.
+ *
+ * Rien d'autre à faire pour que l'outil dure : chaque première facture d'une
+ * année nouvelle fait apparaître cette année d'elle-même, et celles d'avant
+ * restent toutes consultables.
  */
 export async function lireAnnees(): Promise<number[]> {
   const supabase = await creerClientServeur();
@@ -75,7 +82,8 @@ export async function lireAnnees(): Promise<number[]> {
     supabase.from("depense").select("payee_le"),
   ]);
 
-  const annees = new Set<number>([new Date().getFullYear()]);
+  const enCours = new Date().getFullYear();
+  const annees = new Set<number>([enCours, enCours + 1]);
   for (const ligne of factures.data ?? []) {
     annees.add(Number(ligne.emise_le.slice(0, 4)));
     if (ligne.encaissee_le) annees.add(Number(ligne.encaissee_le.slice(0, 4)));
