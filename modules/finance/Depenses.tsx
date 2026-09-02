@@ -8,6 +8,8 @@ import { Icone } from "@/lib/design/Icones";
 import { CHAMP, ETIQUETTE } from "@/lib/design/champs";
 import { aujourdhui, formaterDate } from "@/lib/dates";
 import { formaterMontant, type Depense, type Poste } from "@/lib/facture/types";
+import { grouperParMois } from "@/lib/facture/calculs";
+import { SeparateurMois } from "@/modules/finance/SeparateurMois";
 import {
   enregistrerLaDepense,
   supprimerLaDepense,
@@ -49,6 +51,13 @@ export function Depenses({
   }, [depenses, posteFiltre]);
 
   const total = visibles.reduce((somme, depense) => somme + depense.montant, 0);
+
+  // Rangées par mois de paiement, comme les factures le sont par mois
+  // d'émission : c'est la date qui compte dans la trésorerie du mois.
+  const paquets = useMemo(
+    () => grouperParMois(visibles, (depense) => depense.payee_le),
+    [visibles],
+  );
 
   function soumettre(donnees: FormData) {
     demarrer(async () => {
@@ -100,7 +109,7 @@ export function Depenses({
         </span>
       </div>
 
-      <Carte ton="calme" className="mt-5 p-0">
+      <Carte ton="calme" marge="aucune" className="mt-5">
         {visibles.length === 0 ? (
           <p className="p-8 text-center text-sm text-texte-doux">
             {depenses.length === 0
@@ -108,8 +117,16 @@ export function Depenses({
               : "Aucune dépense sur ce poste."}
           </p>
         ) : (
-          <ul className="divide-y divide-bordure">
-            {visibles.map((depense) => (
+          paquets.map((paquet) => (
+            <section key={paquet.mois}>
+              <SeparateurMois
+                mois={paquet.mois}
+                total={paquet.total}
+                nombre={paquet.lignes.length}
+                devise={devise}
+              />
+              <ul className="divide-y divide-bordure">
+                {paquet.lignes.map((depense) => (
               <li
                 key={depense.id}
                 className="flex flex-wrap items-center gap-x-4 gap-y-2 px-5 py-4"
@@ -161,8 +178,10 @@ export function Depenses({
                   </form>
                 </div>
               </li>
-            ))}
-          </ul>
+                ))}
+              </ul>
+            </section>
+          ))
         )}
       </Carte>
 

@@ -44,6 +44,19 @@ export function formaterJourMois(iso: string): string {
   return `${jour === 1 ? "1er" : jour} ${MOIS[date.getUTCMonth()]}`;
 }
 
+/**
+ * « mars 2026 », à partir d'un mois au format `2026-03`.
+ *
+ * L'année est écrite alors qu'un écran ne montre qu'une année à la fois : les
+ * listes ramènent volontairement les factures de l'année voisine qui
+ * chevauchent le 31 décembre, et un séparateur « décembre » sans année
+ * laisserait croire à un mois de l'année regardée.
+ */
+export function moisEnToutesLettres(mois: string): string {
+  const [annee, rang] = mois.split("-");
+  return `${MOIS[Number(rang) - 1]} ${annee}`;
+}
+
 /** La date du jour au format `2026-03-14`, celui des champs de date. */
 export function aujourdhui(): string {
   const maintenant = new Date();

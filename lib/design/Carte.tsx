@@ -20,12 +20,31 @@ const TONS = {
   calme: "",
 } as const;
 
-type Props = ComponentProps<"div"> & { ton?: keyof typeof TONS };
+/**
+ * **La marge est une propriété et non une classe passée de l'extérieur**, pour
+ * la raison exacte qui vaut pour le ton : un `p-0` ajouté au `className` ne
+ * l'emporte pas de façon fiable sur le `p-6` d'ici. À spécificité égale, c'est
+ * l'ordre dans la feuille de style qui tranche, pas l'ordre dans l'attribut.
+ * Le piège a coûté deux fois : la carte gardait ses vingt-quatre pixels, et
+ * les listes qui devaient toucher les bords flottaient au milieu.
+ *
+ * `aucune` va avec `overflow-hidden` : ce qui touche les bords a des angles
+ * droits, que les coins arrondis de la carte doivent recouper.
+ */
+const MARGES = {
+  normale: "p-6",
+  aucune: "overflow-hidden",
+} as const;
 
-export function Carte({ ton = "posee", className = "", ...props }: Props) {
+type Props = ComponentProps<"div"> & {
+  ton?: keyof typeof TONS;
+  marge?: keyof typeof MARGES;
+};
+
+export function Carte({ ton = "posee", marge = "normale", className = "", ...props }: Props) {
   return (
     <div
-      className={`rounded-carte border border-bordure bg-fond p-6 ${TONS[ton]} ${className}`}
+      className={`rounded-carte border border-bordure bg-fond ${MARGES[marge]} ${TONS[ton]} ${className}`}
       {...props}
     />
   );

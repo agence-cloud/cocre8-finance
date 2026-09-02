@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { bilan, parMois, parPoste } from "@/lib/facture/calculs";
+import { bilan, grouperParMois, parMois, parPoste } from "@/lib/facture/calculs";
 import type { Depense, Facture } from "@/lib/facture/types";
 
 /**
@@ -156,5 +156,38 @@ describe("parPoste", () => {
     );
 
     expect(resultat).toEqual([{ nom: "Sans poste", montant: 120 }]);
+  });
+});
+
+describe("grouperParMois", () => {
+  it("coupe une liste triée en paquets, avec le total de chacun", () => {
+    const paquets = grouperParMois(
+      [
+        facture({ montant: 4500, emise_le: "2026-03-28" }),
+        facture({ montant: 1200, emise_le: "2026-03-05" }),
+        facture({ montant: 900, emise_le: "2026-02-14" }),
+      ],
+      (f) => f.emise_le,
+    );
+
+    expect(paquets.map((p) => [p.mois, p.total, p.lignes.length])).toEqual([
+      ["2026-03", 5700, 2],
+      ["2026-02", 900, 1],
+    ]);
+  });
+
+  it("range une facture sur la date qu'on lui désigne, pas sur une autre", () => {
+    // Émise en mars, payée en mai : elle doit rester sous mars, sinon elle
+    // disparaît du mois où on la cherche.
+    const paquets = grouperParMois(
+      [facture({ emise_le: "2026-03-10", encaissee_le: "2026-05-02" })],
+      (f) => f.emise_le,
+    );
+
+    expect(paquets[0].mois).toBe("2026-03");
+  });
+
+  it("ne rend aucun paquet sur une liste vide", () => {
+    expect(grouperParMois([], () => "2026-01-01")).toEqual([]);
   });
 });

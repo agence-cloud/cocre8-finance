@@ -117,3 +117,39 @@ export function parPoste(
     .map(([nom, montant]) => ({ nom, montant }))
     .sort((a, b) => b.montant - a.montant);
 }
+
+/**
+ * Découpe une liste déjà triée en paquets mensuels, avec le total de chacun.
+ *
+ * **Elle ne trie pas, elle regroupe.** La liste arrive triée par la base, du
+ * plus récent au plus ancien : trier une seconde fois ici cacherait le jour où
+ * l'ordre de la requête changerait, et deux tris qui divergent finissent
+ * toujours par se contredire.
+ *
+ * Générique parce que les factures se rangent sur leur date d'émission et les
+ * dépenses sur leur date de paiement : c'est le seul écart entre les deux
+ * listes, et il tient dans une fonction passée en paramètre.
+ */
+export function grouperParMois<T extends { montant: number }>(
+  lignes: T[],
+  dateDe: (ligne: T) => string,
+): { mois: string; total: number; lignes: T[] }[] {
+  const paquets: { mois: string; total: number; lignes: T[] }[] = [];
+
+  for (const ligne of lignes) {
+    const mois = moisDe(dateDe(ligne));
+    const dernier = paquets.at(-1);
+
+    // On compare au dernier paquet et non à une table : la liste étant triée,
+    // un mois qui réapparaît plus bas serait un défaut de tri, pas un cas à
+    // rattraper en silence.
+    if (dernier && dernier.mois === mois) {
+      dernier.lignes.push(ligne);
+      dernier.total += Number(ligne.montant);
+    } else {
+      paquets.push({ mois, total: Number(ligne.montant), lignes: [ligne] });
+    }
+  }
+
+  return paquets;
+}

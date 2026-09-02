@@ -8,6 +8,8 @@ import { Icone } from "@/lib/design/Icones";
 import { CHAMP, ETIQUETTE } from "@/lib/design/champs";
 import { aujourdhui, formaterDate } from "@/lib/dates";
 import { formaterMontant, type Facture } from "@/lib/facture/types";
+import { grouperParMois } from "@/lib/facture/calculs";
+import { SeparateurMois } from "@/modules/finance/SeparateurMois";
 import {
   basculerLEncaissement,
   enregistrerLaFacture,
@@ -83,6 +85,17 @@ export function Factures({
 
   const total = visibles.reduce((somme, facture) => somme + facture.montant, 0);
 
+  /**
+   * **Les factures se rangent par mois d'émission, jamais d'encaissement.**
+   * La liste répond à « qu'est-ce que j'ai facturé en mars », et une facture
+   * de mars payée en mai doit rester sous mars, sinon elle disparaît du mois
+   * où on la cherche. C'est le mois du paiement qui se lit sur la ligne.
+   */
+  const paquets = useMemo(
+    () => grouperParMois(visibles, (facture) => facture.emise_le),
+    [visibles],
+  );
+
   return (
     <>
       {edition !== null && (
@@ -128,7 +141,7 @@ export function Factures({
         </span>
       </div>
 
-      <Carte ton="calme" className="mt-5 p-0">
+      <Carte ton="calme" marge="aucune" className="mt-5">
         {visibles.length === 0 ? (
           <p className="p-8 text-center text-sm text-texte-doux">
             {factures.length === 0
@@ -136,8 +149,16 @@ export function Factures({
               : "Aucune facture ne correspond."}
           </p>
         ) : (
-          <ul className="divide-y divide-bordure">
-            {visibles.map((facture) => (
+          paquets.map((paquet) => (
+            <section key={paquet.mois}>
+              <SeparateurMois
+                mois={paquet.mois}
+                total={paquet.total}
+                nombre={paquet.lignes.length}
+                devise={devise}
+              />
+              <ul className="divide-y divide-bordure">
+                {paquet.lignes.map((facture) => (
               <li
                 key={facture.id}
                 className="flex flex-wrap items-center gap-x-4 gap-y-2 px-5 py-4"
@@ -229,8 +250,10 @@ export function Factures({
                   </form>
                 </div>
               </li>
-            ))}
-          </ul>
+                ))}
+              </ul>
+            </section>
+          ))
         )}
       </Carte>
 
