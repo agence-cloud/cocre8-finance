@@ -1,0 +1,50 @@
+# Dépendances
+node_modules/
+.pnp
+.pnp.js
+
+# Build
+.next/
+out/
+build/
+dist/
+
+# Secrets : jamais commités
+.env
+.env.*
+!.env.example
+
+# Base locale (si SQLite)
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+npm-debug.log*
+
+# macOS
+.DS_Store
+
+# Éditeurs
+.vscode/
+.idea/
+
+# Claude Code
+.claude/settings.local.json
+
+# Journal d'exécution (scratch)
+.superpowers/
+
+# Cache de compilation TypeScript
+*.tsbuildinfo
+
+# Artefacts de test
+test-results/
+playwright-report/
+
+# Les notes que `next dev` écrit pour les agents. Elles parlent des entrailles
+# de Next, pas de cet outil : dans un modèle destiné à quelqu'un qui ne code
+# pas, c'est du bruit. Elles se recréent toutes seules au prochain `npm run dev`.
+AGENTS.md
