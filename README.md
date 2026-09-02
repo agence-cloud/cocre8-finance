@@ -41,17 +41,16 @@ attends encore.
 
 ## Le récupérer
 
-**Le plus simple : le bouton vert « Use this template »**, en haut de cette
-page. GitHub te crée ta propre copie, chez toi, que tu peux modifier. Il te
-faut un compte GitHub, gratuit.
+Tu n'as rien à télécharger. Le bouton de l'étape 3 se charge de tout : il te
+crée ta copie du code sur GitHub, et il la met en ligne dans la foulée.
 
-**Sans compte GitHub :** clique sur « Code » puis « Download ZIP ». Tu as le
-dossier sur ton ordinateur. Tu pourras le remettre sur GitHub plus tard si tu
-veux le déployer en ligne.
+Si tu préfères avoir le code sous les yeux d'abord, le bouton vert
+**« Use this template »** en haut de cette page t'en fait une copie, et
+« Code » puis « Download ZIP » te la met sur ton ordinateur.
 
 ## L'installer
 
-Quatre étapes, une vingtaine de minutes, aucune ligne de commande.
+Quatre étapes, une quinzaine de minutes, aucune ligne de commande.
 
 ### 1. Ta base de données
 
@@ -73,10 +72,12 @@ fichier.
 
 ### 3. Mettre l'app en ligne
 
-Va sur [vercel.com](https://vercel.com), qui héberge l'app gratuitement,
-connecte ton compte GitHub et choisis la copie du dépôt que tu viens de te
-créer. Avant de lancer le déploiement, ouvre **Environment Variables** et pose
-ces trois valeurs. Elles sont toutes dans ton projet Supabase :
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fagence-cloud%2Fcocre8-finance&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY,SUPABASE_SERVICE_ROLE_KEY&envDescription=Les%20trois%20valeurs%20de%20ton%20projet%20Supabase&project-name=suivi-finances&repository-name=suivi-finances)
+
+Ce bouton fait tout d'un coup : il te crée un compte Vercel si tu n'en as pas,
+il pose ta copie du code sur ton GitHub, et il met l'app en ligne. Il te
+demande d'abord trois valeurs. Elles sont toutes dans le projet Supabase que
+tu viens de créer :
 
 | Ce que Vercel demande | Où le trouver dans Supabase |
 | --- | --- |
