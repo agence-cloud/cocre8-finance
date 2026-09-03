@@ -4,6 +4,7 @@ import { useMemo, useState, useTransition } from "react";
 import { Badge } from "@/lib/design/Badge";
 import { Bouton } from "@/lib/design/Bouton";
 import { Carte } from "@/lib/design/Carte";
+import { Modale } from "@/lib/design/Modale";
 import { Icone } from "@/lib/design/Icones";
 import { CHAMP, ETIQUETTE } from "@/lib/design/champs";
 import { aujourdhui, formaterDate } from "@/lib/dates";
@@ -99,7 +100,15 @@ export function Factures({
   return (
     <>
       {edition !== null && (
-        <Carte className="mb-5">
+        <Modale
+          titre={edition === "nouvelle" ? "Nouvelle facture" : "Modifier la facture"}
+          sous_titre={
+            edition === "nouvelle"
+              ? "Ce que tu as facturé. La date d'encaissement se pose quand l'argent arrive."
+              : undefined
+          }
+          onFermer={() => setEdition(null)}
+        >
           <form action={soumettre}>
             <FormulaireFacture
               facture={edition === "nouvelle" ? null : edition}
@@ -109,7 +118,7 @@ export function Factures({
               onAnnuler={() => setEdition(null)}
             />
           </form>
-        </Carte>
+        </Modale>
       )}
 
       <div className="flex flex-wrap items-center gap-3">
@@ -289,7 +298,7 @@ function FormulaireFacture({
     <>
       {facture && <input type="hidden" name="id" value={facture.id} />}
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-4 px-6 py-6 sm:grid-cols-2">
         <label className="block">
           <span className={ETIQUETTE}>Client</span>
           <input
@@ -349,9 +358,12 @@ function FormulaireFacture({
         </label>
       </div>
 
-      {erreur && <p className="mt-4 text-sm text-accent">{erreur}</p>}
+      {erreur && <p className="px-6 pb-5 text-sm text-accent">{erreur}</p>}
 
-      <div className="mt-5 flex gap-3">
+      {/* Les actions dans leur propre bande : sur une fenêtre qui défile,
+          elles restaient sinon collées au dernier champ et se lisaient comme
+          si elles lui appartenaient. */}
+      <div className="flex gap-3 border-t border-bordure bg-fond-alt px-6 py-5">
         <Bouton type="submit" disabled={enCours}>
           {enCours ? "Enregistrement..." : "Enregistrer"}
         </Bouton>
