@@ -150,6 +150,14 @@ Trois pièges qui coûtent une soirée chacun :
 - Une valeur corrigée ne prend effet qu'au **déploiement suivant**. Corrige,
   puis redéploie.
 
+## Le régler
+
+Le nom de ton outil, ta devise, ton objectif de l'année et tes postes de
+dépense se règlent tous depuis l'écran Réglages.
+
+**Ton mot de passe se change là aussi**, en bas de l'écran. Rien n'est envoyé
+par email : tu poses le nouveau, tu le confirmes, c'est fait.
+
 ## Ce qu'il ne fait pas
 
 Ce n'est pas un logiciel de comptabilité, et il ne prétend pas l'être. Il ne

@@ -9,6 +9,7 @@ import {
   ReglagesOutil,
   ReglagesPostes,
 } from "@/modules/finance/Reglages";
+import { MonMotDePasse } from "@/lib/design/MonMotDePasse";
 
 export default async function PageReglages({
   searchParams,
@@ -44,6 +45,7 @@ export default async function PageReglages({
         <ReglagesOutil reglages={reglages} />
         <ReglagesObjectif annee={annee} objectif={objectif} devise={reglages.devise} />
         <ReglagesPostes postes={postes} />
+        <MonMotDePasse />
       </div>
     </div>
   );
